@@ -1,100 +1,85 @@
-import { useState, useRef, useEffect } from "react";
+import React from "react";
 
 export default function Home() {
-  const [input, setInput] = useState("");
-  const [messages, setMessages] = useState([]);
-  const boxRef = useRef(null);
-
-  useEffect(() => {
-    if (boxRef.current) boxRef.current.scrollTop = boxRef.current.scrollHeight;
-  }, [messages]);
-
-  async function sendMessage() {
-    if (!input.trim()) return;
-    setMessages((m) => [...m, { from: "Você", text: input }]);
-    const messageText = input;
-    setInput("");
-
-    try {
-      const resp = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: messageText }),
-      });
-      const data = await resp.json();
-      const reply = data?.reply || "Desculpe, erro. Tente novamente.";
-      setMessages((m) => [...m, { from: "SMUCK", text: reply }]);
-    } catch (err) {
-      setMessages((m) => [...m, { from: "SMUCK", text: "Erro ao conectar. Verifique a chave." }]);
-    }
-  }
+  const styles = {
+    container: { fontFamily: "Arial, sans-serif", padding: "24px" },
+    header: { maxWidth: 980, margin: "0 auto 24px auto", display: "flex", justifyContent: "space-between", alignItems: "center" },
+    logoBox: { display: "flex", gap: 12, alignItems: "center" },
+    nav: { display: "flex", gap: 18, alignItems: "center" },
+    hero: { maxWidth: 980, margin: "24px auto", display: "grid", gridTemplateColumns: "1fr 360px", gap: 20 },
+    card: { border: "1px solid #eee", borderRadius: 12, padding: 18, background: "#fff" },
+    features: { maxWidth: 980, margin: "24px auto", paddingTop: 8 },
+    grid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 },
+  };
 
   return (
-    <div style={styles.page}>
+    <div style={styles.container}>
       <header style={styles.header}>
-        <div style={styles.brand}>
-          <img src="/logo.png" alt="SMUCK" style={styles.logo} onError={(e)=>{e.target.src='/logo-placeholder.png'}}/>
+        <div style={styles.logoBox}>
+          <div style={{ width: 48, height: 48, borderRadius: 8, background: "#000", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "700" }}>
+            S
+          </div>
           <div>
-            <div style={styles.title}>SMUCK</div>
-            <div style={styles.subtitle}>AI Customer Support • 24/7</div>
+            <h1 style={{ margin: 0 }}>SMUCK</h1>
+            <div style={{ color: "#666", fontSize: 14 }}>Inteligência artificial que entende seus clientes</div>
           </div>
         </div>
 
         <nav style={styles.nav}>
-          <a style={styles.navLink} href="/caracteristicas">Características</a>
-          <a style={styles.navLink} href="/precos">Preços</a>
-          <a style={styles.cta} href="/contato">Contato</a>
+          <a href="/" style={{ color: "#000", textDecoration: "none" }}>Home</a>
+          <a href="/features" style={{ color: "#000", textDecoration: "none" }}>Características</a>
+          <a href="/pricing" style={{ color: "#000", textDecoration: "none" }}>Preços</a>
+          <a href="/contact" style={{ color: "#000", textDecoration: "none" }}>Contato</a>
         </nav>
       </header>
 
-      <main style={styles.main}>
-        <section style={styles.hero}>
-          <div style={styles.heroLeft}>
-            <h1 style={{margin:0}}>Atendimento com IA que entende seu cliente</h1>
-            <p style={{color:"#555",lineHeight:1.5}}>
-              SMUCK responde 24/7, integra com seu site e WhatsApp e aprende com seus documentos.
+      <main>
+        <section id="hero" style={styles.hero}>
+          <div>
+            <h2 style={{ fontSize: 34, marginTop: 0 }}>Suporte ao cliente com IA que nunca dorme</h2>
+            <p style={{ color: "#444" }}>
+              SMUCK é um chatbot de IA pronto para uso para pequenas e médias empresas. Responde 24/7, integra com site, WhatsApp e aprende com seus documentos.
             </p>
-            <ul>
-              <li>Respostas rápidas e profissionais</li>
-              <li>Fácil integração com seus canais</li>
-              <li>Treinável com FAQs e PDFs</li>
-            </ul>
-            <div style={{marginTop:14}}>
-              <a style={styles.primaryBtn} href="/precos">Ver planos</a>
+
+            <div style={{ display: "flex", gap: 12, marginTop: 18 }}>
+              <a href="/pricing" style={{ padding: "12px 18px", background: "#000", color: "#fff", borderRadius: 8, textDecoration: "none" }}>Ver planos</a>
+              <a href="/contact" style={{ padding: "12px 18px", background: "#fff", color: "#000", borderRadius: 8, border: "1px solid #ddd", textDecoration: "none" }}>Fale com a gente</a>
             </div>
           </div>
 
-          <div style={styles.heroRight}>
-            <div style={styles.chatCard}>
-              <div style={styles.chatHeader}>Demo chat — experimente</div>
-
-              <div ref={boxRef} style={styles.chatBox}>
-                {messages.length === 0 && (
-                  <div style={{color:"#777", padding:12}}>Envie uma mensagem para testar a IA.</div>
-                )}
-                {messages.map((m, i) => (
-                  <div key={i} style={m.from === "Você" ? styles.msgUser : styles.msgBot}>
-                    <strong style={{display:"block", marginBottom:6}}>{m.from}</strong>
-                    <div>{m.text}</div>
-                  </div>
-                ))}
-              </div>
-
-              <div style={styles.chatControls}>
-                <input
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Digite sua mensagem..."
-                  onKeyDown={(e)=>{ if(e.key==='Enter') sendMessage(); }}
-                  style={styles.input}
-                />
-                <button onClick={sendMessage} style={styles.sendBtn}>Enviar</button>
-              </div>
+          <div style={styles.card}>
+            <div style={{ height: 260, borderRadius: 8, background: "#f2f2f2", display: "flex", alignItems: "center", justifyContent: "center", color: "#999" }}>
+              Demonstração do chat em breve
             </div>
           </div>
         </section>
 
         <section id="features" style={styles.features}>
           <h3>Quem usa SMUCK</h3>
+
           <div style={styles.grid}>
-            <div style={styles.card}><strong>PMEs</strong><p>Atendimento 24/7 sem equipe extra.</p…
+            <div style={styles.card}>
+              <strong>PMEs</strong>
+              <p>Atendimento 24/7 sem equipe extra.</p>
+            </div>
+
+            <div style={styles.card}>
+              <strong>E-commerces</strong>
+              <p>Respostas rápidas a perguntas comuns e pós-venda.</p>
+            </div>
+
+            <div style={styles.card}>
+              <strong>Serviços</strong>
+              <p>Agendamento e suporte automatizado.</p>
+            </div>
+
+            <div style={styles.card}>
+              <strong>Startups</strong>
+              <p>Integra facilmente com seu site e WhatsApp.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+              }
