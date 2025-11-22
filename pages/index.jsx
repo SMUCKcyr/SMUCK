@@ -1,77 +1,100 @@
-import React from 'react';
+import { useState, useRef, useEffect } from "react";
 
 export default function Home() {
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState([]);
+  const boxRef = useRef(null);
+
+  useEffect(() => {
+    if (boxRef.current) boxRef.current.scrollTop = boxRef.current.scrollHeight;
+  }, [messages]);
+
+  async function sendMessage() {
+    if (!input.trim()) return;
+    setMessages((m) => [...m, { from: "Você", text: input }]);
+    const messageText = input;
+    setInput("");
+
+    try {
+      const resp = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: messageText }),
+      });
+      const data = await resp.json();
+      const reply = data?.reply || "Desculpe, erro. Tente novamente.";
+      setMessages((m) => [...m, { from: "SMUCK", text: reply }]);
+    } catch (err) {
+      setMessages((m) => [...m, { from: "SMUCK", text: "Erro ao conectar. Verifique a chave." }]);
+    }
+  }
+
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', background: '#f8f9fb', minHeight: '100vh' }}>
-      
-      <header style={{ 
-        maxWidth: 980, 
-        margin: '0 auto', 
-        padding: '24px 12px', 
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <img 
-            src="/logo.png" 
-            alt="SMUCK Logo" 
-            style={{ width: 42, height: 42, borderRadius: 8, background: '#000' }} 
-          />
+    <div style={styles.page}>
+      <header style={styles.header}>
+        <div style={styles.brand}>
+          <img src="/logo.png" alt="SMUCK" style={styles.logo} onError={(e)=>{e.target.src='/logo-placeholder.png'}}/>
           <div>
-            <h1 style={{ margin: 0, fontSize: 20 }}>SMUCK</h1>
-            <div style={{ color: '#555', fontSize: 13 }}>AI that understands your customers.</div>
+            <div style={styles.title}>SMUCK</div>
+            <div style={styles.subtitle}>AI Customer Support • 24/7</div>
           </div>
         </div>
 
-        <nav style={{ display: 'flex', gap: 12 }}>
-          <a href="#" style={{ color: '#444' }}>Features</a>
-          <a href="#" style={{ color: '#444' }}>Pricing</a>
-          <a href="#" style={{ color: '#444' }}>Contact</a>
+        <nav style={styles.nav}>
+          <a style={styles.navLink} href="/caracteristicas">Características</a>
+          <a style={styles.navLink} href="/precos">Preços</a>
+          <a style={styles.cta} href="/contato">Contato</a>
         </nav>
       </header>
 
-      <main style={{ maxWidth: 980, margin: '24px auto', padding: '0 12px' }}>
-        
-        <section style={{ background: '#fff', padding: 24, borderRadius: 12, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
-          
-          <div>
-            <h2>AI Customer Support that never sleeps</h2>
-            <p style={{ color: '#444' }}>
-              SMUCK is a ready-to-use AI chatbot for small businesses.  
-              24/7 answers, integrates with your site and WhatsApp, and learns from your documents.
+      <main style={styles.main}>
+        <section style={styles.hero}>
+          <div style={styles.heroLeft}>
+            <h1 style={{margin:0}}>Atendimento com IA que entende seu cliente</h1>
+            <p style={{color:"#555",lineHeight:1.5}}>
+              SMUCK responde 24/7, integra com seu site e WhatsApp e aprende com seus documentos.
             </p>
             <ul>
               <li>Respostas rápidas e profissionais</li>
-              <li>Integra com site, WhatsApp e e-mail</li>
-              <li>Treinado com seus PDFs e FAQs</li>
+              <li>Fácil integração com seus canais</li>
+              <li>Treinável com FAQs e PDFs</li>
             </ul>
-          </div>
-
-          <div>
-            <div style={{ 
-              width: '100%', 
-              height: 260, 
-              background: '#f0f0f0', 
-              borderRadius: 12,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#777'
-            }}>
-              Chat demo coming soon
+            <div style={{marginTop:14}}>
+              <a style={styles.primaryBtn} href="/precos">Ver planos</a>
             </div>
           </div>
 
+          <div style={styles.heroRight}>
+            <div style={styles.chatCard}>
+              <div style={styles.chatHeader}>Demo chat — experimente</div>
+
+              <div ref={boxRef} style={styles.chatBox}>
+                {messages.length === 0 && (
+                  <div style={{color:"#777", padding:12}}>Envie uma mensagem para testar a IA.</div>
+                )}
+                {messages.map((m, i) => (
+                  <div key={i} style={m.from === "Você" ? styles.msgUser : styles.msgBot}>
+                    <strong style={{display:"block", marginBottom:6}}>{m.from}</strong>
+                    <div>{m.text}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={styles.chatControls}>
+                <input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Digite sua mensagem..."
+                  onKeyDown={(e)=>{ if(e.key==='Enter') sendMessage(); }}
+                  style={styles.input}
+                />
+                <button onClick={sendMessage} style={styles.sendBtn}>Enviar</button>
+              </div>
+            </div>
+          </div>
         </section>
 
-      </main>
-
-      <footer style={{ textAlign: 'center', padding: 24, color: '#555' }}>
-        © SMUCK — AI Customer Support
-      </footer>
-
-    </div>
-  );
-            }
+        <section id="features" style={styles.features}>
+          <h3>Quem usa SMUCK</h3>
+          <div style={styles.grid}>
+            <div style={styles.card}><strong>PMEs</strong><p>Atendimento 24/7 sem equipe extra.</p…
