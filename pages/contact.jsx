@@ -29,7 +29,7 @@ export default function Contact() {
           <p style={styles.text}>
             Prefere algo mais formal? Manda um email contando sobre sua empresa.
           </p>
-          <a href="mailto:smuckatendimento@gmail.com" style={styles.link}>
+          <a href="mailto:ia.smuck@gmail.com" style={styles.link}>
   ia.smuck@gmail.com
 </a>
         </section>
