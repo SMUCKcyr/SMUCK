@@ -15,7 +15,7 @@ export default function Contact() {
             Atendimento rápido, direto comigo. Tirar dúvidas, negociar plano ou pedir um teste.
           </p>
           <a
-            href="https://wa.me/5531999999999"
+            href="https://wa.me/5535992362570"
             style={styles.whatsButton}
             target="_blank"
           >
@@ -29,9 +29,9 @@ export default function Contact() {
           <p style={styles.text}>
             Prefere algo mais formal? Manda um email contando sobre sua empresa.
           </p>
-          <a href="mailto:contato@smuck.ai" style={styles.link}>
-            contato@smuck.ai
-          </a>
+          <a href="mailto:smuckatendimento@gmail.com" style={styles.link}>
+  ia.smuck@gmail.com
+</a>
         </section>
 
         <section style={styles.card}>
