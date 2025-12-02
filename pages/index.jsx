@@ -16,7 +16,7 @@ export default function Home() {
    <section style={{ marginTop: 60 }}>
   <h2>Converse com a IA da SMUCK 🤖</h2>
   <iframe
-    src="/chat"
+    src="/bate-papo"
     style={{
       width: "100%",
       height: "500px",
