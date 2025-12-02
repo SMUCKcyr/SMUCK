@@ -6,8 +6,8 @@ export default function ChatPage() {
         padding: 20,
       }}
     >
-      <h1>Chat SMUCK funcionando 👌</h1>
-      <p>Se você está vendo esta mensagem, a página /chat está ok.</p>
+      <h1>Bate-papo SMUCK funcionando 👌</h1>
+      <p>Se você está vendo esta mensagem, a página /bate-papo está ok.</p>
     </div>
   );
 }
