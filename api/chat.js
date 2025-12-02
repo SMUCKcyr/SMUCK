@@ -13,16 +13,16 @@ export default async function handler(req, res) {
     const { message } = req.body;
 
     if (!message) {
-      return res.status(400).json({ error: "Mensagem vazia." });
+      return res.status(400).json({ error: "Mensagem obrigatória" });
     }
 
     const completion = await client.chat.completions.create({
-      model: "gpt-4.1-mini",
+      model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
           content:
-            "Você é a IA oficial da SMUCK. Explique a SMUCK, ajude com dúvidas sobre planos, atendimento ao cliente e automação para empresas.",
+            "Você é a IA oficial da SMUCK. Responda como uma assistente profissional, rápida e amigável.",
         },
         {
           role: "user",
@@ -31,13 +31,11 @@ export default async function handler(req, res) {
       ],
     });
 
-    const aiResponse =
-      completion.choices?.[0]?.message?.content ||
-      "Não consegui gerar uma resposta agora.";
+    const aiResponse = completion.choices[0].message.content;
 
     return res.status(200).json({ reply: aiResponse });
   } catch (error) {
-    console.error("Erro na API SMUCK:", error);
-    return res.status(500).json({ error: "Erro interno da SMUCK." });
+    console.error("ERRO NA API:", error);
+    return res.status(500).json({ error: "Erro interno" });
   }
 }
