@@ -13,6 +13,18 @@ export default function Home() {
         <h2>Atendimento Inteligente para Empresas</h2>
         <p>A SMUCK responde clientes 24 horas, entende contexto e reduz custos.</p>
       </section>
+   <section style={{ marginTop: 60 }}>
+  <h2>Converse com a IA da SMUCK 🤖</h2>
+  <iframe
+    src="/chat"
+    style={{
+      width: "100%",
+      height: "500px",
+      border: "1px solid #ddd",
+      borderRadius: "10px",
+    }}
+  />
+</section> 
     </div>
   );
 }
