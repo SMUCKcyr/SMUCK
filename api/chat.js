@@ -13,16 +13,15 @@ export default async function handler(req, res) {
     const { message } = req.body;
 
     if (!message) {
-      return res.status(400).json({ error: "Mensagem obrigatória" });
+      return res.status(400).json({ error: "Mensagem não enviada" });
     }
 
     const completion = await client.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4.1-mini",
       messages: [
         {
           role: "system",
-          content:
-            "Você é a IA oficial da SMUCK. Responda como uma assistente profissional, rápida e amigável.",
+          content: "Você é a IA oficial da SMUCK e responde clientes.",
         },
         {
           role: "user",
@@ -35,7 +34,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ reply: aiResponse });
   } catch (error) {
-    console.error("ERRO NA API:", error);
-    return res.status(500).json({ error: "Erro interno" });
+    console.error("Erro na API:", error);
+    return res.status(500).json({ error: "Erro interno no servidor" });
   }
 }
