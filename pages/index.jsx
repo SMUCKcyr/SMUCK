@@ -17,7 +17,7 @@ export default function Home() {
       <section style={styles.chatSection}>
         <h2>Converse com a IA da SMUCK 🤖</h2>
         <iframe
-          src="/bate-papo"
+          src="/chat"
           title="Chat SMUCK"
           style={styles.iframe}
         />
