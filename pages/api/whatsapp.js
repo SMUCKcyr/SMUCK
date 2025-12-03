@@ -1,44 +1,48 @@
+export const config = {
+  api: {
+    bodyParser: true,
+  },
+};
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    const { message } = req.body;
+    const { mensagem } = req.body;
 
-    if (!message) {
-      return res.status(400).json({ error: "Message not found" });
+    if (!mensagem) {
+      return res.status(400).json({ error: "Mensagem não encontrada no body" });
     }
 
+    // DADOS DO SEU WHATSAPP API
     const token = process.env.WHATSAPP_TOKEN;
-    const phoneNumberId = process.env.WHATSAPP_PHONE_ID;
-    const to = process.env.WHATSAPP_TO;
+    const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
 
-    const response = await fetch(
-      `https://graph.facebook.com/v19.0/${phoneNumberId}/messages`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messaging_product: "whatsapp",
-          to: to,
-          type: "text",
-          text: { body: message },
-        }),
-      }
-    );
+    const url = `https://graph.facebook.com/v17.0/${phoneNumberId}/messages`;
 
-    const data = await response.json();
+    const payload = {
+      messaging_product: "whatsapp",
+      to: "55SEUNUMEROAQUI",
+      type: "text",
+      text: { body: mensagem },
+    };
 
-    if (!response.ok) {
-      return res.status(500).json({ error: "Failed to send", details: data });
-    }
+    const resposta = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
 
-    return res.status(200).json({ success: true, data });
-  } catch (error) {
-    return res.status(500).json({ error: "Server error", details: error.message });
+    const data = await resposta.json();
+
+    return res.status(200).json({ enviado: true, data });
+
+  } catch (e) {
+    return res.status(500).json({ error: "Erro interno", detalhe: e.message });
   }
 }
