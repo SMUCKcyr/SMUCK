@@ -59,12 +59,12 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Mensagem inválida." });
     }
 
-    const conclusao = await cliente.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-  {
-    role: "system",
-    content: `
+    const completion = await client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: `
 You are the official AI assistant of SMUCK, a smart support platform for small and medium businesses.
 
 Language rules:
@@ -83,22 +83,18 @@ Tone and behavior:
   - improve customer experience.
 - If the user asks something completely outside this context, say politely that your focus is SMUCK, customer support and automation.
 - Keep answers between 4 and 6 sentences, direto ao ponto.
-`.trim(),
-  },
-  {
-    role: "user",
-    content: mensagem,
-  },
-],
-        {
-            role: "user",
-            content: mensagem,
+          `.trim(),
         },
-    ],
-    max_tokens: 220,
-});
+        {
+          role: "user",
+          content: message,
+        },
+      ],
+      max_tokens: 220,
+    });
+
     const reply =
-      completion.choices?.[0]?.message?.content ||
+      completion.choices?.[0]?.message?.content?.trim() ||
       "Não consegui gerar uma resposta agora. Tente novamente.";
 
     return res.status(200).json({ reply });
