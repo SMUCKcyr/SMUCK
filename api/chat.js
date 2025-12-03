@@ -59,22 +59,34 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Mensagem inválida." });
     }
 
-    const completion = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
+    const conclusao = await cliente.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
         {
-          role: "system",
-          content:
-            "Você é a IA oficial da SMUCK, uma plataforma de atendimento para empresas. Responda em português do Brasil, com clareza, objetividade e tom profissional amigável. Foque em explicar como a SMUCK ajuda empresas com atendimento, automação, WhatsApp, redução de custos e experiência do cliente.",
-        },
-        {
-          role: "user",
-          content: message,
-        },
-      ],
-      max_tokens: 300,
-    });
+            role: "system",
+            content: `
+Você é a IA oficial da SMUCK, uma plataforma de atendimento inteligente para pequenas e médias empresas.
 
+Regras:
+- Sempre responda em português do Brasil.
+- Seja direto, claro e educado.
+- Fale como um atendente profissional que entende de negócios.
+- Quando fizer sentido, mostre como a SMUCK ajuda a:
+  - reduzir tempo de atendimento,
+  - automatizar respostas no WhatsApp e no site,
+  - aumentar conversões de vendas,
+  - melhorar a experiência do cliente.
+- Se o usuário pedir algo fora do contexto, diga educadamente que seu foco é falar sobre atendimento, automação e a SMUCK.
+- Responda em no máximo 4 a 6 frases.
+            `.trim()
+        },
+        {
+            role: "user",
+            content: mensagem,
+        },
+    ],
+    max_tokens: 220,
+});
     const reply =
       completion.choices?.[0]?.message?.content ||
       "Não consegui gerar uma resposta agora. Tente novamente.";
