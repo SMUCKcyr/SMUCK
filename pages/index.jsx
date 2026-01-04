@@ -1,4 +1,17 @@
 export default function Home() {
+  // 🔹 FUNÇÃO DE TESTE WHATSAPP (NOVA)
+  const isTestMode = true;
+
+  const enviarTesteWhatsApp = async () => {
+    try {
+      const res = await fetch("/api/test-whatsapp", { method: "POST" });
+      await res.json();
+      alert("✅ Mensagem enviada! Veja seu WhatsApp.");
+    } catch (err) {
+      alert("❌ Erro ao enviar mensagem");
+      console.error(err);
+    }
+  };
   return (
     <div style={styles.container}>
       <header style={styles.header}>
@@ -13,7 +26,26 @@ export default function Home() {
         <h2>Atendimento Inteligente para Empresas</h2>
         <p>A SMUCK responde clientes 24 horas, entende contexto e reduz custos.</p>
       </section>
-
+{isTestMode && (
+  <section style={{ marginBottom: 40, textAlign: "center" }}>
+    <button
+      onClick={enviarTesteWhatsApp}
+      style={{
+        padding: "15px 25px",
+        backgroundColor: "#4CAF50",
+        color: "white",
+        fontSize: 16,
+        fontWeight: "bold",
+        border: "none",
+        borderRadius: 10,
+        cursor: "pointer",
+        boxShadow: "0 4px 6px rgba(0,0,0,0.2)"
+      }}
+    >
+      Enviar mensagem de teste
+    </button>
+  </section>
+)}
       <section style={styles.chatSection}>
         <h2>Converse com a IA da SMUCK 🤖</h2>
         <iframe
