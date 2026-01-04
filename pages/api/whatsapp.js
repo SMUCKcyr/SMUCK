@@ -24,7 +24,7 @@ export default async function handler(req, res) {
 
     const payload = {
       messaging_product: "whatsapp",
-      to: "55SEUNUMEROAQUI",
+      to: "5535992362570",
       type: "text",
       text: { body: mensagem },
     };
