@@ -1,48 +1,56 @@
-export const config = {
-  api: {
-    bodyParser: true,
-  },
-};
-
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+  if (req.method === "GET") {
+    // Verificação do webhook
+    const VERIFY_TOKEN = "smuck_verify";
 
-  try {
-    const { mensagem } = req.body;
+    const mode = req.query["hub.mode"];
+    const token = req.query["hub.verify_token"];
+    const challenge = req.query["hub.challenge"];
 
-    if (!mensagem) {
-      return res.status(400).json({ error: "Mensagem não encontrada no body" });
+    if (mode === "subscribe" && token === VERIFY_TOKEN) {
+      return res.status(200).send(challenge);
     }
 
-    // DADOS DO SEU WHATSAPP API
-    const token = process.env.WHATSAPP_TOKEN;
-    const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
+    return res.status(403).send("Erro de verificação");
+  }
 
-    const url = `https://graph.facebook.com/v17.0/${phoneNumberId}/messages`;
+  if (req.method === "POST") {
+    try {
+      const entry = req.body.entry?.[0];
+      const change = entry?.changes?.[0];
+      const value = change?.value;
 
-    const payload = {
-      messaging_product: "whatsapp",
-      to: "5535992362570",
-      type: "text",
-      text: { body: mensagem },
-    };
+      const message = value?.messages?.[0];
+      const from = message?.from;
 
-    const resposta = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+      if (message && from) {
+        console.log("Mensagem recebida:", message.text?.body);
 
-    const data = await resposta.json();
+        // resposta simples (prova de vida)
+        await fetch(
+          `https://graph.facebook.com/v18.0/${process.env.PHONE_NUMBER_ID}/messages`,
+          {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${process.env.WHATSAPP_TOKEN}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              messaging_product: "whatsapp",
+              to: from,
+              type: "text",
+              text: {
+                body: "SMUCK IA online 🤖🔥"
+              }
+            })
+          }
+        );
+      }
 
-    return res.status(200).json({ enviado: true, data });
-
-  } catch (e) {
-    return res.status(500).json({ error: "Erro interno", detalhe: e.message });
+      res.sendStatus(200);
+    } catch (err) {
+      console.error(err);
+      res.sendStatus(500);
+    }
   }
 }
